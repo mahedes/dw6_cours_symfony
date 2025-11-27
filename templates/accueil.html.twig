@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h1>Accueil</h1>
+
+{{dump(listProducts)}}
+
+{% for product in listProducts %}
+
+<p>{{ product.id }} : {{ product.name }} - {{ product.price }} € </p>
+
+{% endfor %}
+
+{% endblock %}
+
