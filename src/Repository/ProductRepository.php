@@ -21,25 +21,31 @@ class ProductRepository extends ServiceEntityRepository
     //     */
 
     // Sélectionner tout ce qui a un prix plus grand que $value
+    // public function findAllGreaterThanPrice($value): array
+    // {
+    //     return $this->createQueryBuilder('p') // on crée un query builder dans p (la table product)
+    //         ->andWhere('p.price >= :val') // on fait un WHERE price >= $value
+    //         ->setParameter('val', $value) // $value est mappé sur :val comme paramètre
+    //         ->orderBy('p.id', 'ASC') // ORDER BY id ASC
+    //         ->setMaxResults(10) // LIMIT 10
+    //         ->getQuery() // on execute
+    //         ->getResult() // on retourne le resultat sous forme objet/tableau
+    //     ;
+    // }
+
     public function findAllGreaterThanPrice($value): array
     {
-        return $this->createQueryBuilder('p') // on crée un query builder dans p (la table product)
-            ->andWhere('p.price >= :val') // on fait un WHERE price >= $value
-            ->setParameter('val', $value) // $value est mappé sur :val comme paramètre
-            ->orderBy('p.id', 'ASC') // ORDER BY id ASC
-            ->setMaxResults(10) // LIMIT 10
-            ->getQuery() // on execute
-            ->getResult() // on retourne le resultat sous forme objet/tableau
-        ;
-    }
+        $conn = $this->getEntityManager()->getConnection();
 
-    //    public function findOneBySomeField($value): ?Product
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $sql = '
+            SELECT * FROM product p
+            WHERE p.price > :val
+            ORDER BY p.price ASC
+            ';
+
+        $resultSet = $conn->executeQuery($sql, ['val' => $value]);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
 }
