@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<h1>Ajouter un article</h1>
+
+{{ form_start(formulaire, {'attr': {'novalidate' : 'novalidate' , 'data-turbo': 'false'}}) }}
+    {{ form_widget(formulaire) }}
+    <button type="submit">Ajouter un article</button>
+{{ form_end(formulaire) }}
+
+
+{% endblock %}

@@ -3,10 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 
 final class HomeController extends AbstractController
 {
@@ -84,5 +90,61 @@ final class HomeController extends AbstractController
         $em->flush();
 
         return new Response("Article Supprimé !");
+    }
+
+
+    #[Route('/add2', name: 'app_ajouter2',)]
+    public function ajouter2(Request $request, EntityManagerInterface $em)
+    {
+        $product = new Product;
+        // $product->setName("Casquette");
+        // $product->setPrice(15);
+        // $product->setDescription("pratique pour l'été");
+
+        // $formulaire = $this->createFormBuilder($product)
+        //     ->add('name', TextType::class)
+        //     ->add('price', IntegerType::class)
+        //     ->add('description', TextType::class)
+        //     ->add('save', SubmitType::class, ['label' => 'Create Task'])
+        //     ->getForm();
+
+        $formulaire = $this->createForm(ProductType::class, $product);
+
+        $formulaire->handleRequest($request);
+        if ($formulaire->isSubmitted() && $formulaire->isValid()) {
+
+            $em->persist($product);
+            $em->flush();
+
+            $this->addFlash(
+                'addProduct',
+                'Nouveau produit ajouté avec succès'
+            );
+
+            return $this->redirectToRoute("app_accueil");
+        }
+
+        return $this->render("ajouter.html.twig", [
+            "formulaire" => $formulaire
+        ]);
+    }
+
+
+
+    #[Route('/edit2/{id}', name: 'app_modifier2',)]
+    public function modifier2(Request $request, EntityManagerInterface $em, $id)
+    {
+        $product = $em->getRepository(Product::class)->find($id);
+        $formulaire = $this->createForm(ProductType::class, $product);
+
+        $formulaire->handleRequest($request);
+        if ($formulaire->isSubmitted() && $formulaire->isValid()) {
+
+            $em->flush();
+        }
+
+        return $this->render("modifier.html.twig", [
+            "formulaire" => $formulaire
+        ]);
     }
 }
