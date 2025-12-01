@@ -93,7 +93,7 @@ final class HomeController extends AbstractController
     }
 
 
-    #[Route('/add2', name: 'app_ajouter2',)]
+    #[Route('/admin/add2', name: 'app_ajouter2',)]
     public function ajouter2(Request $request, EntityManagerInterface $em)
     {
         $product = new Product;

@@ -4,12 +4,12 @@
 
 <h1>Accueil</h1>
 
-{{dump(listProducts)}}
+
+{{ dump(app.user) }}
+
 
 {% for product in listProducts %}
-
 <p>{{ product.id }} : {{ product.name }} - {{ product.price }} € </p>
-
 {% endfor %}
 
 {% endblock %}
